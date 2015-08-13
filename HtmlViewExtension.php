@@ -6,12 +6,12 @@
 namespace Jivoo\View;
 
 /**
- * A view extension.
+ * A view extension that produces HTML.
  */
-interface IViewExtension {
+interface HtmlViewExtension extends ViewExtension {
   /**
-   * Prepare extension.
-   * @return bool Whether or not the extension should be displayed.
+   * Output extension.
+   * @return string HTML.
    */
-  public function prepare();
+  public function html();
 }

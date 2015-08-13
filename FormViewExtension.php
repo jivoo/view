@@ -5,13 +5,10 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View;
 
+use Jivoo\Helpers\FormExtension;
+
 /**
- * A view extension that produces HTML.
+ * A view extension that produces form elements.
  */
-interface IHtmlViewExtension extends IViewExtension {
-  /**
-   * Output extension.
-   * @return string HTML.
-   */
-  public function html();
+interface FormViewExtension extends ViewExtension, FormExtension {
 }
