@@ -42,13 +42,19 @@ use Jivoo\View\Compile\TemplateCompiler;
  * @method ViewExtension[] extensions(string $hook = null, string $type = 'ViewExtension')
  *  Alias for {@see ViewExtensions::extensions}.
  */
-class View
+class View implements \Psr\Log\LoggerAwareInterface
 {
-
+    
     /**
-     * {@inheritdoc}
+     * @var \Jivoo\Store\Document
      */
-    protected $modules = array('Routing', 'Assets');
+    private $config;
+    
+    /**
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
     /**
      * @var ViewData Data for view.
@@ -103,9 +109,23 @@ class View
     /**
      * {@inheritdoc}
      */
-    protected function __construct(\Jivoo\Store\Document $config)
-    {
-        $this->resources = new ViewResources($this->m->Assets);
+    protected function __construct(
+        \Jivoo\Http\Route\AssetScheme $assets,
+        \Jivoo\Http\Router $router,
+        \Jivoo\Store\Document $config = null,
+        \Psr\Log\LoggerInterface $logger = null
+    ) {
+        if (! isset($config)) {
+            $config = new \Jivoo\Store\Document();
+        }
+        $this->config = $config;
+        
+        if (! isset($logger)) {
+            $logger = new \Jivoo\Log\NullLogger();
+        }
+        $this->logger = $logger;
+        
+        $this->resources = new ViewResources($assets);
         $this->extensions = new ViewExtensions($this);
         $this->data = new ViewData();
         $this->blocks = new ViewBlocks($this);
@@ -116,16 +136,17 @@ class View
             $this->autoCompile = true;
         }
 
-        $this->data->app = $this->app->manifest;
-
-        $this->addTemplateDir('Core', 'templates', 4);
-        $this->addTemplateDir('app', 'templates');
-
-        $this->addFunction('link', array($this->m->Routing, 'getLink'));
-        $this->addFunction('url', array($this->m->Routing, 'getUrl'));
-        $this->addFunction('isCurrent', array($this->m->Routing, 'isCurrent'));
-        $this->addFunction('mergeRoutes', array($this->m->Routing, 'mergeRoutes'));
-        $this->addFunction('file', array($this->m->Assets, 'getAsset'));
+        $this->addFunction('link', function ($route) use ($router) {
+            return $router->getUri($route)->__toString();
+        });
+        $this->addFunction('url', function ($route) use ($router) {
+            return $router->getUri($route)->__toString();
+        });
+//        $this->addFunction('isCurrent', array($this->m->Routing, 'isCurrent'));
+//        $this->addFunction('mergeRoutes', array($this->m->Routing, 'mergeRoutes'));
+        $this->addFunction('file', function ($asset) use ($assets) {
+            return $assets->find($asset);
+        });
 
         $this->addFunctions(
             $this->blocks,
@@ -156,7 +177,7 @@ class View
             case 'compiler':
                 return $this->$property;
         }
-        return parent::__get($property);
+        throw new \Jivoo\InvalidPropertyException('undefined property: ' . $property);
     }
 
     /**
@@ -168,6 +189,14 @@ class View
             return call_user_func_array($this->functions[$function], $parameters);
         }
         return parent::__call($function, $parameters);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function setLogger(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
     }
 
     /**
@@ -194,15 +223,12 @@ class View
 
     /**
      * Add a template directory.
-     * @param string $key Path key.
      * @param string $path Path.
      * @param int $priority Priority.
      */
-    public function addTemplateDir($key, $path, $priority = 5)
+    public function addTemplateDir($path, $priority = 5)
     {
-        $dir = $this->p($key, $path);
-        $this->templateDirs[$dir] = array(
-            'key' => $key,
+        $this->templateDirs[$path] = array(
             'path' => $path,
             'init' => false,
             'priority' => $priority
@@ -212,22 +238,17 @@ class View
     /**
      * Find the 'init.php'-template in a template directory if the directory has
      * not been initialized.
-     * @param string $key Path key.
      * @param string $path Path.
      * @return string|null Absolute path to init-file or null if the file does
      * not exist or the file has already been included.
      */
-    public function getInitFile($key, $path)
+    public function getInitFile($path)
     {
-        $dir = $this->p($key, $path);
-        if (!isset($this->templateDirs[$dir]) or $this->templateDirs[$dir]['init']) {
+        if (!isset($this->templateDirs[$path]) or $this->templateDirs[$path]['init']) {
             return;
         }
-        $this->templateDirs[$dir]['init'] = true;
-        if (substr($dir, -1, 1) != '/') {
-            $dir .= '/';
-        }
-        $file = $dir . 'init.php';
+        $this->templateDirs[$path]['init'] = true;
+        $file = \Jivoo\Paths::combinePaths($path, 'init.php');
         if (file_exists($file)) {
             return realpath($file);
         }
@@ -270,8 +291,7 @@ class View
      * The associative array is of the form:
      * <code>
      * array(
-     *   'key' => ..., // Path key for template directory (e.g. 'app').
-     *   'path' => ..., // Path for template directory.
+     *   'path' => ...., // Template directory path (string)
      *   'init' => ..., // Whether the init.php-file in the template directory (bool)
      *   'priority' => ..., // Priority of template directory (int)
      *   'compiled' => ..., // Whether this is a compiled template (bool)
@@ -367,7 +387,7 @@ class View
         if (isset($this->template)) {
             return $this->template->render($template, $data, $withLayout);
         }
-        uasort($this->templateDirs, array('Jivoo\Core\Utilities', 'prioritySorter'));
+        uasort($this->templateDirs, array('Jivoo\Utilities', 'prioritySorter'));
         $this->template = new Template($this);
         $result = $this->template->render($template, $data, $withLayout);
         $this->template = null;

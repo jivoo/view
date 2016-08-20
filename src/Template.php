@@ -166,10 +166,10 @@ class Template
         extract($this->view->data[$_template]->toArray(), EXTR_SKIP);
         $_templateInfo = $this->view->findTemplate($_template);
         if (!isset($_templateInfo)) {
-            throw new InvalidTemplateException(tr('Template not found: %1', $_template));
+            throw new InvalidTemplateException('Template not found: ' . $_template);
         }
         if (isset($_templateInfo['init']) and ! $_templateInfo['init']) {
-            $_init = $this->view->getInitFile($_templateInfo['key'], $_templateInfo['path']);
+            $_init = $this->view->getInitFile($_templateInfo['path']);
             if (isset($_init)) {
                 $this->embed($_init);
             }

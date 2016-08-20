@@ -5,8 +5,7 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View;
 
-use Jivoo\Assets\Assets;
-use Jivoo\Core\Utilities;
+use Jivoo\Utilities;
 
 /**
  * Collection of scripts and stylesheets to be included into the template.
@@ -55,7 +54,7 @@ class ViewResources
     private $framePointer = 0;
 
     /**
-     * @var Assets Assets module.
+     * @var \Jivoo\Http\Route\AssetScheme Assets module.
      */
     private $assets;
 
@@ -63,7 +62,7 @@ class ViewResources
      * Cnstruct collection of view resources.
      * @param Assets $assets Assets module.
      */
-    public function __construct(Assets $assets)
+    public function __construct(\Jivoo\Http\Route\AssetScheme $assets)
     {
         $this->assets = $assets;
     }
@@ -102,11 +101,11 @@ class ViewResources
         switch ($type) {
             case 'js':
                 $type = 'script';
-                $location = $this->assets->getAsset('js/' . $resource);
+                $location = $this->assets->find('js/' . $resource);
                 break;
             case 'css':
                 $type = 'style';
-                $location = $this->assets->getAsset('css/' . $resource);
+                $location = $this->assets->find('css/' . $resource);
                 break;
             default:
                 throw new ResourceTypeException('Unknown type of resource: ' . $type);
