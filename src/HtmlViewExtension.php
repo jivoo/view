@@ -8,10 +8,11 @@ namespace Jivoo\View;
 /**
  * A view extension that produces HTML.
  */
-interface HtmlViewExtension extends ViewExtension {
+interface HtmlViewExtension extends ViewExtension
+{
   /**
    * Output extension.
    * @return string HTML.
    */
-  public function html();
+    public function html();
 }

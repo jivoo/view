@@ -8,28 +8,32 @@ namespace Jivoo\View\Compile;
 /**
  * A foreach loop node.
  */
-class ForeachNode extends InternalNode {
-  /**
-   * @var string Expression.
-   */
-  private $foreach;
+class ForeachNode extends InternalNode
+{
 
-  /**
-   * Construct foreach loop. 
-   * @param string $foreach Expression.
-   */
-  public function __construct($foreach) {
-    parent::__construct();
-    $this->foreach = $foreach;
-  }
+    /**
+     * @var string Expression.
+     */
+    private $foreach;
 
-  /**
-   * {@inheritdoc}
-   */
-  public function __toString() {
-    $code = '<?php foreach (' . $this->foreach . '): ?>' . "\n";
-    $code .= parent::__toString();
-    $code .= '<?php endforeach; ?>' . "\n";
-    return $code;
-  }
+    /**
+     * Construct foreach loop.
+     * @param string $foreach Expression.
+     */
+    public function __construct($foreach)
+    {
+        parent::__construct();
+        $this->foreach = $foreach;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        $code = '<?php foreach (' . $this->foreach . '): ?>' . "\n";
+        $code .= parent::__toString();
+        $code .= '<?php endforeach; ?>' . "\n";
+        return $code;
+    }
 }

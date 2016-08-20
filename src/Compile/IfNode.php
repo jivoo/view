@@ -10,59 +10,65 @@ namespace Jivoo\View\Compile;
  * @property-read InternalNode $then "then" nodes.
  * @property-read InternalNode $else "else" nodes.
  */
-class IfNode extends TemplateNode {
-  /**
-   * @var string Expression.
-   */
-  private $condition = '';
-  
-  /**
-   * @var InternalNode "then" nodes.
-   */
-  private $then;
-  
-  /**
-   * @var InternalNode "else" nodes.
-   */
-  private $else;
+class IfNode extends TemplateNode
+{
 
-  /**
-   * Construct if statement.
-   * @param string $condition Conditional expression.
-   * @param TemplateNode $then True output.
-   */
-  public function __construct($condition, TemplateNode $then = null) {
-    parent::__construct();
-    $this->condition = $condition;
-    $this->then = new InternalNode();
-    $this->else = new InternalNode();
-    if (isset($then))
-      $this->then->append($then);
-  }
+    /**
+     * @var string Expression.
+     */
+    private $condition = '';
 
-  /**
-   * {@inheritdoc}
-   */
-  public function __get($property) {
-    switch ($property) {
-      case 'then':
-      case 'else':
-        return $this->$property;
+    /**
+     * @var InternalNode "then" nodes.
+     */
+    private $then;
+
+    /**
+     * @var InternalNode "else" nodes.
+     */
+    private $else;
+
+    /**
+     * Construct if statement.
+     * @param string $condition Conditional expression.
+     * @param TemplateNode $then True output.
+     */
+    public function __construct($condition, TemplateNode $then = null)
+    {
+        parent::__construct();
+        $this->condition = $condition;
+        $this->then = new InternalNode();
+        $this->else = new InternalNode();
+        if (isset($then)) {
+            $this->then->append($then);
+        }
     }
-    return parent::__get($property);
-  }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function __toString() {
-    $code = '<?php if (' . $this->condition . '): ?>' . "\n";
-    $code .= $this->then->__toString();
-    if (count($this->else) > 0) {
-      $code .= '<?php else: ?>' . "\n";
-      $code .= $this->else->__toString();
+    /**
+     * {@inheritdoc}
+     */
+    public function __get($property)
+    {
+        switch ($property) {
+            case 'then':
+            case 'else':
+                return $this->$property;
+        }
+        return parent::__get($property);
     }
-    $code .= '<?php endif; ?>' . "\n";
-    return $code;
-  }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        $code = '<?php if (' . $this->condition . '): ?>' . "\n";
+        $code .= $this->then->__toString();
+        if (count($this->else) > 0) {
+            $code .= '<?php else: ?>' . "\n";
+            $code .= $this->else->__toString();
+        }
+        $code .= '<?php endif; ?>' . "\n";
+        return $code;
+    }
 }

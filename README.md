@@ -1,6 +1,6 @@
-# Jivoo HTTP
+# Jivoo View
 
-[![Build Status](https://travis-ci.org/jivoo/http.svg?branch=master)](https://travis-ci.org/jivoo/http) [![Coverage Status](https://coveralls.io/repos/jivoo/http/badge.svg?branch=master&service=github)](https://coveralls.io/github/jivoo/http?branch=master)
+[![Build Status](https://travis-ci.org/jivoo/view.svg?branch=master)](https://travis-ci.org/jivoo/view) [![Coverage Status](https://coveralls.io/repos/jivoo/view/badge.svg?branch=master&service=github)](https://coveralls.io/github/jivoo/view?branch=master)
 
 **Work in progress!**
 
