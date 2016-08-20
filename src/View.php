@@ -107,9 +107,14 @@ class View implements \Psr\Log\LoggerAwareInterface
     private $compiled = array();
 
     /**
-     * {@inheritdoc}
+     * Construct view.
+     *
+     * @param \Jivoo\Http\Route\AssetScheme $assets Assets.
+     * @param \Jivoo\Http\Router $router Router.
+     * @param \Jivoo\Store\Document $config Configuration.
+     * @param \Psr\Log\LoggerInterface $logger Logger.
      */
-    protected function __construct(
+    public function __construct(
         \Jivoo\Http\Route\AssetScheme $assets,
         \Jivoo\Http\Router $router,
         \Jivoo\Store\Document $config = null,
