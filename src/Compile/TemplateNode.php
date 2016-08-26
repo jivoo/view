@@ -5,6 +5,7 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View\Compile;
 
+use Jivoo\Assume;
 use Jivoo\InvalidPropertyException;
 
 /**
@@ -101,7 +102,7 @@ abstract class TemplateNode
      */
     public function detach()
     {
-        assume(isset($this->parent));
+        Assume::that(isset($this->parent));
         $this->parent->remove($this);
         return $this;
     }
@@ -113,7 +114,7 @@ abstract class TemplateNode
      */
     public function before(TemplateNode $node)
     {
-        assume(isset($this->parent));
+        Assume::that(isset($this->parent));
         $this->parent->insert($node, $this);
         return $this;
     }
@@ -125,7 +126,7 @@ abstract class TemplateNode
      */
     public function after(TemplateNode $node)
     {
-        assume(isset($this->parent));
+        Assume::that(isset($this->parent));
         if (isset($this->next)) {
             $this->next->before($node);
         } else {
@@ -141,7 +142,7 @@ abstract class TemplateNode
      */
     public function replaceWith(TemplateNode $node)
     {
-        assume(isset($this->parent));
+        Assume::that(isset($this->parent));
         $this->parent->replace($this, $node);
         return $node;
     }

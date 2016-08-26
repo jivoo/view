@@ -190,7 +190,7 @@ class DefaultMacros extends Macros
             $between = array();
             do {
                 if ($prev instanceof IfNode) {
-                    assume(count($prev->else) == 0);
+                    \Jivoo\Assume::that(count($prev->else) == 0);
                     $between = array_reverse($between);
                     foreach ($between as $betweenNode) {
                         $betweenNode->detach();

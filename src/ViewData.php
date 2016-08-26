@@ -5,10 +5,13 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View;
 
+use ArrayAccess;
+use Jivoo\Assume;
+
 /**
  * Collection of view data for templates.
  */
-class ViewData implements \ArrayAccess
+class ViewData implements ArrayAccess
 {
 
     /**
@@ -103,12 +106,12 @@ class ViewData implements \ArrayAccess
                 $this->templateData[$template] = new ViewData();
                 $this->templateData[$template]->data = $data;
             } else {
-                assume($data instanceof ViewData);
+                Assume::that($data instanceof ViewData);
                 $this->templateData[$template] = $data;
             }
         } else {
             if (!is_array($data)) {
-                assume($data instanceof ViewData);
+                Assume::that($data instanceof ViewData);
                 $data = $data->toArray();
             }
             $this->templateData[$template]->data = array_merge(

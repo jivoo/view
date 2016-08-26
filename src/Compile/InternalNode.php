@@ -5,10 +5,13 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View\Compile;
 
+use Countable;
+use Jivoo\Assume;
+
 /**
  * An internal node that contains other nodes.
  */
-class InternalNode extends TemplateNode implements \Countable
+class InternalNode extends TemplateNode implements Countable
 {
 
     /**
@@ -40,7 +43,7 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function append(TemplateNode $node)
     {
-        \Jivoo\Assume::that(!isset($node->parent));
+        Assume::that(!isset($node->parent));
         $node->parent = $this;
         $node->root = $this->root;
         if ($this->content !== array()) {
@@ -59,7 +62,7 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function prepend(TemplateNode $node)
     {
-        assume(!isset($node->parent));
+        Assume::that(!isset($node->parent));
         $node->parent = $this;
         $node->root = $this->root;
         if ($this->content !== array()) {
@@ -77,7 +80,7 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function remove(TemplateNode $node)
     {
-        assume($node->parent === $this);
+        Assume::that($node->parent === $this);
         $this->content = array_diff($this->content, array($node));
         $node->parent = null;
         $node->root = null;
@@ -100,8 +103,8 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function insert(TemplateNode $node, TemplateNode $next)
     {
-        assume($next->parent === $this);
-        assume(!isset($node->parent));
+        Assume::that($next->parent === $this);
+        Assume::that(!isset($node->parent));
         $offset = array_search($next, $this->content, true);
         array_splice($this->content, $offset, 0, array($node));
         $node->parent = $this;
@@ -123,8 +126,8 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function replace(TemplateNode $node, TemplateNode $replacement)
     {
-        assume($node->parent === $this);
-        assume(!isset($replacement->parent));
+        Assume::that($node->parent === $this);
+        Assume::that(!isset($replacement->parent));
         $offset = array_search($node, $this->content, true);
         $this->content[$offset] = $replacement;
         $replacement->parent = $this;
