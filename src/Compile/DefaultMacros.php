@@ -41,7 +41,7 @@ class DefaultMacros extends Macros
     public function outertextMacro(HtmlNode $node, TemplateNode $value)
     {
         if ($value instanceof PhpNode) {
-            $value = new PhpNode('h(' . $value->code . ')');
+            $value = new PhpNode('\Jivoo\View\Html::h(' . $value->code . ')');
         }
         $node->replaceWith($value);
     }
@@ -54,7 +54,7 @@ class DefaultMacros extends Macros
     public function innertextMacro(HtmlNode $node, TemplateNode $value)
     {
         if ($value instanceof PhpNode) {
-            $value = new PhpNode('h(' . $value->code . ')');
+            $value = new PhpNode('\Jivoo\View\Html::h(' . $value->code . ')');
         }
         $node->clear()->append($value);
     }
@@ -288,6 +288,16 @@ class DefaultMacros extends Macros
     }
 
     /**
+     * Sets the src-attribute to the specified route-value (see {@see \Jivoo\Routing\Routing}).
+     * @param HtmlNode $node Node.
+     * @param TemplateNode|null $value Macro parameter.
+     */
+    public function srcMacro(HtmlNode $node, TemplateNode $value)
+    {
+        $node->setAttribute('src', new PhpNode('$this->link(' . PhpNode::expr($value)->code . ')'));
+    }
+
+    /**
      * Adds a class.
      * @param HtmlNode $node Node.
      * @param TemplateNode|null $value Macro parameter.
@@ -297,7 +307,7 @@ class DefaultMacros extends Macros
         if ($node->hasAttribute('class')) {
             $node->setAttribute(
                 'class',
-                new PhpNode("'" . h($node->getAttribute('class')) . " ' . " . PhpNode::expr($value)->code)
+                new PhpNode("'" . \Jivoo\View\Html::h($node->getAttribute('class')) . " ' . " . PhpNode::expr($value)->code)
             );
         } else {
             $node->setAttribute('class', PhpNode::expr($value));

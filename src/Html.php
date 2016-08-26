@@ -445,4 +445,14 @@ class Html implements \ArrayAccess
     {
         return isset(self::$selfClosingTags[$tag]);
     }
+    
+    /**
+     * Encode string for HTML usage.
+     * @param string $string Input.
+     * @return string Output.
+     */
+    public static function h($string)
+    {
+        return htmlentities(strval($string), ENT_COMPAT, 'UTF-8', false);
+    }
 }

@@ -5,7 +5,6 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View\Compile;
 
-use Jivoo\View\InvalidMacroException;
 use Jivoo\View\InvalidTemplateException;
 use SimpleHtmlDom\simple_html_dom;
 use SimpleHtmlDom\simple_html_dom_node;

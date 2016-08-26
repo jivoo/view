@@ -5,6 +5,8 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View;
 
+use Jivoo\Http\Route\AssetScheme;
+use Jivoo\Http\Router;
 use Jivoo\Utilities;
 
 /**
@@ -54,17 +56,23 @@ class ViewResources
     private $framePointer = 0;
 
     /**
-     * @var \Jivoo\Http\Route\AssetScheme Assets module.
+     * @var AssetScheme Assets module.
      */
     private $assets;
+    
+    /**
+     * @var Router
+     */
+    private $router;
 
     /**
      * Cnstruct collection of view resources.
      * @param Assets $assets Assets module.
      */
-    public function __construct(\Jivoo\Http\Route\AssetScheme $assets)
+    public function __construct(AssetScheme $assets, Router $router)
     {
         $this->assets = $assets;
+        $this->router = $router;
     }
 
     /**
@@ -101,16 +109,18 @@ class ViewResources
         switch ($type) {
             case 'js':
                 $type = 'script';
-                $location = $this->assets->find('js/' . $resource);
+                $file = 'js/' . $resource;
                 break;
             case 'css':
                 $type = 'style';
-                $location = $this->assets->find('css/' . $resource);
+                $file = 'css/' . $resource;
                 break;
             default:
                 throw new ResourceTypeException('Unknown type of resource: ' . $type);
         }
-        if (!isset($location)) {
+        if ($this->assets->find($file) !== null) {
+            $location = $this->router->getUri('asset:' . $file);
+        } else {
             $location = 'resource-is-missing/' . $resource;
         }
         return array(
@@ -230,10 +240,10 @@ class ViewResources
         }
         if ($resInfo['type'] == 'script') {
             $html .= '<script type="text/javascript" src="'
-                . h($resInfo['location']) . '"></script>' . PHP_EOL;
+                . Html::h($resInfo['location']) . '"></script>' . PHP_EOL;
         } elseif ($resInfo['type'] == 'style') {
             $html .= '<link rel="stylesheet" type="text/css" href="'
-                . h($resInfo['location']) . '" />' . PHP_EOL;
+                . Html::h($resInfo['location']) . '" />' . PHP_EOL;
         }
         $this->blocks[$resInfo['type']] .= $html;
         $this->emitted[$resource] = true;

@@ -5,8 +5,16 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View;
 
+use Jivoo\Http\Route\AssetScheme;
+use Jivoo\Http\Router;
+use Jivoo\InvalidPropertyException;
+use Jivoo\Log\NullLogger;
+use Jivoo\Paths;
+use Jivoo\Store\Document;
 use Jivoo\Utilities;
 use Jivoo\View\Compile\TemplateCompiler;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * The view module.
@@ -42,17 +50,17 @@ use Jivoo\View\Compile\TemplateCompiler;
  * @method ViewExtension[] extensions(string $hook = null, string $type = 'ViewExtension')
  *  Alias for {@see ViewExtensions::extensions}.
  */
-class View implements \Psr\Log\LoggerAwareInterface
+class View implements LoggerAwareInterface
 {
     
     /**
-     * @var \Jivoo\Store\Document
+     * @var Document
      */
     private $config;
     
     /**
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -109,28 +117,28 @@ class View implements \Psr\Log\LoggerAwareInterface
     /**
      * Construct view.
      *
-     * @param \Jivoo\Http\Route\AssetScheme $assets Assets.
-     * @param \Jivoo\Http\Router $router Router.
-     * @param \Jivoo\Store\Document $config Configuration.
-     * @param \Psr\Log\LoggerInterface $logger Logger.
+     * @param AssetScheme $assets Assets.
+     * @param Router $router Router.
+     * @param Document $config Configuration.
+     * @param LoggerInterface $logger Logger.
      */
     public function __construct(
-        \Jivoo\Http\Route\AssetScheme $assets,
-        \Jivoo\Http\Router $router,
-        \Jivoo\Store\Document $config = null,
-        \Psr\Log\LoggerInterface $logger = null
+        AssetScheme $assets,
+        Router $router,
+        Document $config = null,
+        LoggerInterface $logger = null
     ) {
         if (! isset($config)) {
-            $config = new \Jivoo\Store\Document();
+            $config = new Document();
         }
         $this->config = $config;
         
         if (! isset($logger)) {
-            $logger = new \Jivoo\Log\NullLogger();
+            $logger = new NullLogger();
         }
         $this->logger = $logger;
         
-        $this->resources = new ViewResources($assets);
+        $this->resources = new ViewResources($assets, $router);
         $this->extensions = new ViewExtensions($this);
         $this->data = new ViewData();
         $this->blocks = new ViewBlocks($this);
@@ -183,7 +191,7 @@ class View implements \Psr\Log\LoggerAwareInterface
             case 'compiler':
                 return $this->$property;
         }
-        throw new \Jivoo\InvalidPropertyException('undefined property: ' . $property);
+        throw new InvalidPropertyException('undefined property: ' . $property);
     }
 
     /**
@@ -200,7 +208,7 @@ class View implements \Psr\Log\LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function setLogger(\Psr\Log\LoggerInterface $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
@@ -254,7 +262,7 @@ class View implements \Psr\Log\LoggerAwareInterface
             return;
         }
         $this->templateDirs[$path]['init'] = true;
-        $file = \Jivoo\Paths::combinePaths($path, 'init.php');
+        $file = Paths::combinePaths($path, 'init.php');
         if (file_exists($file)) {
             return realpath($file);
         }
