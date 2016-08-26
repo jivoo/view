@@ -40,7 +40,7 @@ class InternalNode extends TemplateNode implements \Countable
      */
     public function append(TemplateNode $node)
     {
-        assume(!isset($node->parent));
+        \Jivoo\Assume::that(!isset($node->parent));
         $node->parent = $this;
         $node->root = $this->root;
         if ($this->content !== array()) {

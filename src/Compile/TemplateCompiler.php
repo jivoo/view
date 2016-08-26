@@ -7,6 +7,8 @@ namespace Jivoo\View\Compile;
 
 use Jivoo\View\InvalidMacroException;
 use Jivoo\View\InvalidTemplateException;
+use SimpleHtmlDom\simple_html_dom;
+use SimpleHtmlDom\simple_html_dom_node;
 
 /**
  * Converts HTML templates to PHP templates.
@@ -73,7 +75,7 @@ class TemplateCompiler
      */
     public function compile($template)
     {
-        $dom = new \simple_html_dom();
+        $dom = new simple_html_dom();
         $this->currentTemplate = $template;
         $file = file_get_contents($template);
         if ($file === false) {
@@ -106,7 +108,7 @@ class TemplateCompiler
      * @param \simple_html_dom_node $node DOM node.
      * @return TemplateNode Template node.
      */
-    public function convert(\simple_html_dom_node $node)
+    public function convert(simple_html_dom_node $node)
     {
         if ($node->tag === 'text' or $node->tag === 'unknown') {
             return new TextNode($node->innertext);

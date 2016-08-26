@@ -5,7 +5,7 @@
 // See the LICENSE file or http://opensource.org/licenses/MIT for more information.
 namespace Jivoo\View\Compile;
 
-use Jivoo\Helpers\Html;
+use Jivoo\View\Html;
 
 /**
  * An HTML node.

@@ -136,7 +136,6 @@ class View implements \Psr\Log\LoggerAwareInterface
         $this->blocks = new ViewBlocks($this);
 
         if ($this->config->get('compileTemplates', false)) {
-            $this->vendor->import('jivoo/simplehtmldom');
             $this->compiler = new TemplateCompiler();
             $this->autoCompile = true;
         }
@@ -147,7 +146,9 @@ class View implements \Psr\Log\LoggerAwareInterface
         $this->addFunction('url', function ($route) use ($router) {
             return $router->getUri($route)->__toString();
         });
-//        $this->addFunction('isCurrent', array($this->m->Routing, 'isCurrent'));
+        $this->addFunction('isCurrent', function ($route) use ($router) {
+            // TODO
+        });
 //        $this->addFunction('mergeRoutes', array($this->m->Routing, 'mergeRoutes'));
         $this->addFunction('file', function ($asset) use ($assets) {
             return $assets->find($asset);

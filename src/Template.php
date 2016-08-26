@@ -160,7 +160,7 @@ class Template
      */
     protected function embed($_template, $_data = array())
     {
-        assume(is_string($_template));
+        \Jivoo\Assume::isString($_template);
         extract($_data, EXTR_SKIP);
         extract($this->view->data->toArray(), EXTR_SKIP);
         extract($this->view->data[$_template]->toArray(), EXTR_SKIP);
