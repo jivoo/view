@@ -137,6 +137,39 @@ class DefaultMacros extends Macros
     {
         $node->replaceWith(new PhpNode('$this->block(' . PhpNode::expr($value)->code . ')'));
     }
+    
+    /**
+     * Assign the node to a block.
+     * @param HtmlNode $node Node.
+     * @param TemplateNode|null $value Macro parameter.
+     */
+    public function assignMacro(HtmlNode $node, TemplateNode $value)
+    {
+        $node->before(new PhpNode('$this->begin(' . PhpNode::expr($value)->code . ');'));
+        $node->after(new PhpNode('$this->end();'));
+    }
+    
+    /**
+     * Append the node to a block.
+     * @param HtmlNode $node Node.
+     * @param TemplateNode|null $value Macro parameter.
+     */
+    public function appendMacro(HtmlNode $node, TemplateNode $value)
+    {
+        $node->before(new PhpNode('$this->append(' . PhpNode::expr($value)->code . ');'));
+        $node->after(new PhpNode('$this->end();'));
+    }
+    
+    /**
+     * Prepend the node to a block.
+     * @param HtmlNode $node Node.
+     * @param TemplateNode|null $value Macro parameter.
+     */
+    public function prependMacro(HtmlNode $node, TemplateNode $value)
+    {
+        $node->before(new PhpNode('$this->prepend(' . PhpNode::expr($value)->code . ');'));
+        $node->after(new PhpNode('$this->end();'));
+    }
 
     /**
      * Sets the layout.
