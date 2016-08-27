@@ -109,17 +109,15 @@ class ViewResources
         switch ($type) {
             case 'js':
                 $type = 'script';
-                $file = 'js/' . $resource;
                 break;
             case 'css':
                 $type = 'style';
-                $file = 'css/' . $resource;
                 break;
             default:
                 throw new ResourceTypeException('Unknown type of resource: ' . $type);
         }
-        if ($this->assets->find($file) !== null) {
-            $location = $this->router->getUri('asset:' . $file);
+        if ($this->assets->find($resource) !== null) {
+            $location = $this->router->getUri('asset:' . $resource);
         } else {
             $location = 'resource-is-missing/' . $resource;
         }

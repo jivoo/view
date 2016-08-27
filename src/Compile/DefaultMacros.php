@@ -66,7 +66,7 @@ class DefaultMacros extends Macros
      */
     public function htmlMacro(HtmlNode $node, TemplateNode $value)
     {
-        $this->_innerhtml($node, $value);
+        $this->innerhtmlMacro($node, $value);
     }
 
     /**
@@ -76,7 +76,7 @@ class DefaultMacros extends Macros
      */
     public function textMacro(HtmlNode $node, TemplateNode $value)
     {
-        $this->_innertext($node, $value);
+        $this->innertextMacro($node, $value);
     }
 
     /**
