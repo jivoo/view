@@ -114,7 +114,10 @@ class DefaultMacros extends Macros
             $node->root->prepend(new PhpNode('$this->import(' . PhpNode::expr($value)->code . ')', true));
         }
         if ($node->tag == 'link') {
-            $node->replaceWith(new PhpNode('$this->resourceBlock()'));
+            $node->replaceWith(new PhpNode('$this->resourceBlock("style")'));
+        }
+        if ($node->tag == 'script') {
+            $node->replaceWith(new PhpNode('$this->resourceBlock("script")'));
         }
     }
 
