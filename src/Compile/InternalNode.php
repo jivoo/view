@@ -81,7 +81,8 @@ class InternalNode extends TemplateNode implements Countable
     public function remove(TemplateNode $node)
     {
         Assume::that($node->parent === $this);
-        $this->content = array_diff($this->content, array($node));
+        array_splice($this->content, array_search($node, $this->content, true), 1);
+//        $this->content = array_diff($this->content, array($node));
         $node->parent = null;
         $node->root = null;
         if (isset($node->next)) {

@@ -8,6 +8,7 @@ namespace Jivoo\View;
 use Jivoo\Http\Route\AssetScheme;
 use Jivoo\Http\Router;
 use Jivoo\InvalidPropertyException;
+use Jivoo\InvalidMethodException;
 use Jivoo\Log\NullLogger;
 use Jivoo\Paths;
 use Jivoo\Store\Document;
@@ -148,7 +149,7 @@ class View implements LoggerAwareInterface
             $this->autoCompile = true;
         }
 
-        $this->addFunction('link', function ($route) use ($router) {
+            $this->addFunction('link', function ($route) use ($router) {
             return $router->getUri($route)->__toString();
         });
         $this->addFunction('url', function ($route) use ($router) {
@@ -157,19 +158,18 @@ class View implements LoggerAwareInterface
         $this->addFunction('isCurrent', function ($route) use ($router) {
             // TODO
         });
-//        $this->addFunction('mergeRoutes', array($this->m->Routing, 'mergeRoutes'));
+        //        $this->addFunction('mergeRoutes', array($this->m->Routing, 'mergeRoutes'));
         $this->addFunction('file', function ($asset) use ($assets) {
             return $assets->find($asset);
         });
+        $this->addFunctions(
+            $this->resources, array('provide', 'import', 'resourceBlock', 'importConditional',
+            'openFrame', 'closeFrame')
+        );
 
         $this->addFunctions(
             $this->blocks,
             array('icon', 'meta', 'relation', 'block', 'isEmpty')
-        );
-        $this->addFunctions(
-            $this->resources,
-            array('provide', 'import', 'resourceBlock', 'importConditional',
-            'openFrame', 'closeFrame')
         );
         $this->addFunctions(
             $this->extensions,
@@ -202,7 +202,7 @@ class View implements LoggerAwareInterface
         if (isset($this->functions[$function])) {
             return call_user_func_array($this->functions[$function], $parameters);
         }
-        return parent::__call($function, $parameters);
+        throw new InvalidMethodException('Undefined method: ' . $function);
     }
     
     /**
@@ -349,6 +349,12 @@ class View implements LoggerAwareInterface
                 break;
             }
             $file = $dir . $name . '.php';
+            if (file_exists($file)) {
+                $result['file'] = $file;
+                $result['compiled'] = false;
+                break;
+            }
+            $file = $dir . '_' . $name . '.php';
             if (file_exists($file)) {
                 $result['file'] = $file;
                 $result['compiled'] = false;
