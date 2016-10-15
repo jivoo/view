@@ -301,6 +301,25 @@ class DefaultMacros extends Macros
     public function datetimeMacro(HtmlNode $node, TemplateNode $value)
     {
         $node->setAttribute('datetime', new PhpNode('date(\'c\', ' . PhpNode::expr($value)->code . ')'));
+        $node->setProperty('j:timestamp', $value);
+    }
+    
+    /**
+     * Formats a date set using the 'datetime'-macro.
+     * @param \Jivoo\View\Compile\HtmlNode $node Node.
+     * @param \Jivoo\View\Compile\TemplateNode $value Macro parameter.
+     */
+    public function dateformatMacro(HtmlNode $node, TemplateNode $value)
+    {
+        if ($node->hasProperty('j:timestamp')) {
+            $time = PhpNode::expr($node->getProperty('j:timestamp'));
+        } elseif ($node->hasAttribute('datetime')) {
+            $time = new PhpNode('strtotime(' . PhpNode::expr($node->getAttribute('datetime')) . ')');
+        } else {
+            throw new InvalidTemplateException('Missing datetime-attribute');
+        }
+        $phpNode = new PhpNode('\Jivoo\I18n\I18n::date(' . PhpNode::expr($value)->code . ', ' . $time->code . ')');
+        $node->clear()->append($phpNode);
     }
 
     /**

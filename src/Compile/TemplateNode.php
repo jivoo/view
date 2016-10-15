@@ -150,7 +150,7 @@ abstract class TemplateNode
     /**
      * Get value of a property (or macro if one exists with the same name).
      * @param string $property Property.
-     * @return string Value.
+     * @return mixed Value.
      */
     public function getProperty($property)
     {
@@ -167,7 +167,7 @@ abstract class TemplateNode
     /**
      * Get value of a property (removes macro with same name if it exists).
      * @param string $property Property.
-     * @param string $value Value.
+     * @param mixed $value Value.
      */
     public function setProperty($property, $value = null)
     {
