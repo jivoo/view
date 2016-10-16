@@ -330,7 +330,7 @@ class DefaultMacros extends Macros
     public function hrefMacro(HtmlNode $node, TemplateNode $value)
     {
         if ($node->hasAttribute('class')) {
-        } else {
+        } else if ($node->tag != 'link') {
             $node->setAttribute(
                 'class',
                 new PhpNode(
