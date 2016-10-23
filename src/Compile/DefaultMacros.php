@@ -215,6 +215,20 @@ class DefaultMacros extends Macros
     }
 
     /**
+     * Removes the node from the DOM but leaves its children.
+     * @param HtmlNode $node Node.
+     * @param TemplateNode|null $value Macro parameter.
+     */
+    public function stripMacro(HtmlNode $node, TemplateNode $value = null)
+    {
+        foreach ($node->getChildren() as $child) {
+            $child->detach();
+            $node->before($child);
+        }
+        $node->detach();
+    }
+
+    /**
      * Begins or continues (if parameter omitted) an if block around the node.
      * @param HtmlNode $node Node.
      * @param TemplateNode $value Macro parameter.
