@@ -12,6 +12,8 @@ use Jivoo\View\InvalidTemplateException;
  */
 class DefaultMacros extends Macros
 {
+    
+    protected $properties = ['data'];
 
     /**
      * Replaces the node with PHP code.
@@ -128,7 +130,14 @@ class DefaultMacros extends Macros
      */
     public function embedMacro(HtmlNode $node, TemplateNode $value)
     {
-        $node->replaceWith(new PhpNode('$this->embed(' . PhpNode::expr($value)->code . ')'));
+        if ($node->hasProperty('j:data')) {
+            $node->replaceWith(new PhpNode(
+                '$this->embed(' . PhpNode::expr($value)->code . ', '
+                    . PhpNode::expr($node->getProperty('j:data'))->code . ')'
+            ));
+        } else {
+            $node->replaceWith(new PhpNode('$this->embed(' . PhpNode::expr($value)->code . ')'));
+        }
     }
 
     /**
@@ -344,7 +353,7 @@ class DefaultMacros extends Macros
     public function hrefMacro(HtmlNode $node, TemplateNode $value)
     {
         if ($node->hasAttribute('class')) {
-        } else if ($node->tag != 'link') {
+        } elseif ($node->tag != 'link') {
             $node->setAttribute(
                 'class',
                 new PhpNode(
@@ -376,7 +385,10 @@ class DefaultMacros extends Macros
         if ($node->hasAttribute('class')) {
             $node->setAttribute(
                 'class',
-                new PhpNode("'" . \Jivoo\View\Html::h($node->getAttribute('class')) . " ' . " . PhpNode::expr($value)->code)
+                new PhpNode(
+                    "'" . \Jivoo\View\Html::h($node->getAttribute('class'))
+                        . " ' . " . PhpNode::expr($value)->code
+                )
             );
         } else {
             $node->setAttribute('class', PhpNode::expr($value));
