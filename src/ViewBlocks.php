@@ -14,7 +14,7 @@ class ViewBlocks
     /**
      * @var string[] Associative array of block names and content.
      */
-    private $blocks = array();
+    private $blocks = [];
 
     /**
      * @var View View.
@@ -28,6 +28,11 @@ class ViewBlocks
     public function __construct(View $view)
     {
         $this->view = $view;
+    }
+    
+    public function clear()
+    {
+        $this->blocks = [];
     }
 
     /**
@@ -116,7 +121,7 @@ class ViewBlocks
     {
         $this->append(
             'meta',
-            '<meta name="' . h($name) . '" content="' . h($content) . '" />' . PHP_EOL
+            '<meta name="' . Html::h($name) . '" content="' . Html::h($content) . '" />' . PHP_EOL
         );
     }
 
@@ -131,13 +136,13 @@ class ViewBlocks
         if (isset($type)) {
             $this->append(
                 'meta',
-                '<link rel="' . h($rel) . '" type="' . h($type)
+                '<link rel="' . Html::h($rel) . '" type="' . Html::h($type)
                 . '" href="' . $href . '" />' . PHP_EOL
             );
         } else {
             $this->append(
                 'meta',
-                '<link rel="' . h($rel) . '" href="' . $href . '" />' . PHP_EOL
+                '<link rel="' . Html::h($rel) . '" href="' . $href . '" />' . PHP_EOL
             );
         }
     }
