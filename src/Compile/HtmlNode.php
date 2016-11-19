@@ -214,9 +214,17 @@ class HtmlNode extends InternalNode
     {
         $output = '<' . $this->tag;
         foreach ($this->attributes as $name => $value) {
-            $output .= ' ' . $name;
-            if (isset($value) and ! $value->isNull()) {
-                $output .= '="' . $value . '"';
+            if ($value instanceof PhpNode and !$value->statement and $value->hasFlag('?')) {
+                $output .= '<?php $_attr = ' . $value->code . ';';
+                $output .= 'if (isset($_attr) and $_attr !== false) {';
+                $output .= "echo ' " . $name . "' . ";
+                $output .= '($_attr === true ? ' . "''" . ' : \'="\' . $_attr . \'"\');';
+                $output .= '} ?>';
+            } else {
+                $output .= ' ' . $name;
+                if (isset($value) and ! $value->isNull()) {
+                    $output .= '="' . $value . '"';
+                }
             }
         }
         if (count($this->content) == 0 and $this->selfClosing) {

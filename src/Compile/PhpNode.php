@@ -9,6 +9,7 @@ namespace Jivoo\View\Compile;
  * A PHP expression or statement.
  * @property-read string $code PHP code.
  * @property-read bool $statement True if statement, fasle if expression.
+ * @property-read bool[] $flags Node flags.
  */
 class PhpNode extends TemplateNode
 {
@@ -22,13 +23,18 @@ class PhpNode extends TemplateNode
      * @var bool True if statement.
      */
     private $statement = false;
+    
+    /**
+     * @var bool[]
+     */
+    private $flags = [];
 
     /**
      * Construct PHP expression or statement.
      * @param string $code PHP code.
      * @param bool $statement True if statement, false if expression.
      */
-    public function __construct($code, $statement = false)
+    public function __construct($code, $statement = false, $flags = '')
     {
         parent::__construct();
         if (!$statement) {
@@ -36,6 +42,7 @@ class PhpNode extends TemplateNode
         }
         $this->code = $code;
         $this->statement = $statement;
+        $this->flags = array_fill_keys(str_split($flags), true);
     }
 
     /**
@@ -89,9 +96,20 @@ class PhpNode extends TemplateNode
         switch ($property) {
             case 'code':
             case 'statement':
+            case 'flags':
                 return $this->$property;
         }
         return parent::__get($property);
+    }
+    
+    /**
+     * Whether the flag is set on the node.
+     * @param string $flag Flag.
+     * @return bool True if set, false otherwise.
+     */
+    public function hasFlag($flag)
+    {
+        return isset($this->flags[$flag]);
     }
 
     /**

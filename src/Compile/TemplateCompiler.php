@@ -119,8 +119,8 @@ class TemplateCompiler
         } else {
             $output = new HtmlNode($node->tag);
             foreach ($node->attr as $name => $value) {
-                if (preg_match('/^{(.*)}$/', $value, $matches) === 1) {
-                    $value = new PhpNode($matches[1]);
+                if (preg_match('/^{(.*)}([\?])?$/', $value, $matches) === 1) {
+                    $value = new PhpNode($matches[1], false, isset($matches[2]) ? $matches[2] : '');
                 } elseif ($value !== true) {
                     $value = new TextNode($value);
                 } else {
