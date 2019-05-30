@@ -14,7 +14,10 @@
     }
   ],
   "autoload": {
-    "psr-4": {"Jivoo\\View\\": "src/"}
+    "psr-4": {"Jivoo\\View\\": "src/"},
+    "psr-0": {
+      "simple_html_dom": "src/vendor/"
+    }
   },
   "autoload-dev": {
     "psr-4": {"Jivoo\\View\\": "tests/"}
@@ -24,8 +27,7 @@
     "psr/log": "1.0",
     "composer/semver": "^1.2",
     "jivoo/core": "^1.0",
-    "jivoo/http": "^1.0",
-    "mgargano/simplehtmldom": "^1.5"
+    "jivoo/http": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^4.0",
