@@ -6,8 +6,8 @@
 namespace Jivoo\View\Compile;
 
 use Jivoo\View\InvalidTemplateException;
-use SimpleHtmlDom\simple_html_dom;
-use SimpleHtmlDom\simple_html_dom_node;
+use \simple_html_dom;
+use \simple_html_dom_node;
 
 /**
  * Converts HTML templates to PHP templates.
